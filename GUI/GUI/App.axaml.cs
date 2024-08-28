@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Vsite.Oom.Battleship.GUI.Models;
+using Vsite.Oom.Battleship.GUI.Services;
 using Vsite.Oom.Battleship.GUI.ViewModels;
 using Vsite.Oom.Battleship.GUI.Views;
 using Vsite.Oom.Battleship.Model;
@@ -19,7 +20,6 @@ public partial class App : Application
     
     public override void Initialize()
     {
-        
         AvaloniaXamlLoader.Load(this);
     }
 
@@ -50,6 +50,7 @@ public partial class App : Application
             .AddTransient<GameViewModel>()
             .AddTransient<NewGameViewModel>()
             .AddScoped<SquareEliminator>()
+            .AddScoped<IGameServerService, GameServerService>()
             .AddSingleton<Game>()
             .BuildServiceProvider());
     }
