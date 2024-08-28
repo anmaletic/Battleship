@@ -20,10 +20,20 @@ public partial class MainViewModel : ObservableRecipient
     {
         WeakReferenceMessenger.Default.Register<ChangeSettingsMessage>(this, (r, m) =>
         {
-            CurrentView = new NewGameView() { DataContext = Ioc.Default.GetService<NewGameViewModel>(), StartGameCommand = StartGameCommand, IsVertical = false};
+            DispalyNewGameView();
         });
         
-        CurrentView = new NewGameView() { DataContext = Ioc.Default.GetService<NewGameViewModel>(), StartGameCommand = StartGameCommand, IsVertical = true};
+        DispalyNewGameView();
+    }
+
+    private void DispalyNewGameView()
+    {
+        CurrentView = new NewGameView()
+        {
+            DataContext = Ioc.Default.GetService<NewGameViewModel>(),
+            StartGameCommand = StartGameCommand,
+            IsVertical = false
+        };
     }
 
     [RelayCommand]
