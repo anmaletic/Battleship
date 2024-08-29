@@ -28,17 +28,7 @@ public partial class NewGameView : UserControl
         
         InitializeComponent();
     }
-
-    public static readonly StyledProperty<ICommand> StartGameCommandProperty =
-        AvaloniaProperty.Register<NewGameView, ICommand>(
-            nameof(StartGameCommand));
-
-    public ICommand StartGameCommand
-    {
-        get => GetValue(StartGameCommandProperty);
-        set => SetValue(StartGameCommandProperty, value);
-    }
-
+    
     public static readonly StyledProperty<bool> IsVerticalProperty = AvaloniaProperty.Register<NewGameView, bool>(
         nameof(IsVertical));
 
