@@ -1,14 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Vsite.Oom.Battleship.GUI.Models;
 
+public enum Btn
+{
+    Ok,
+    Yes,
+    No,
+    YesNo
+}
+
 public class DisplayMessage : INotifyPropertyChanged
 {
     private bool isVisible;
-    public string Title { get; set; }
-    public string Content { get; set; }
+    public string Title { get; set; } = "";
+    public string Content { get; set; } = "";
+    public Btn Btn { get; set; } = Btn.Ok;
+
+    public Action<Btn> Closed { get; set; }  = _ => { };
 
     public bool IsVisible
     {
@@ -23,7 +34,7 @@ public class DisplayMessage : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
