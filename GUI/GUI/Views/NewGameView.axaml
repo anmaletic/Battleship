@@ -43,145 +43,258 @@
             Background="{DynamicResource AccentColor}"
             CornerRadius="20">
 
-      <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto">
+      <Grid ColumnDefinitions="350, 350" RowDefinitions="Auto, Auto, Auto, Auto">
 
         <!--  Title  -->
-        <Label Grid.Row="0"
+        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                HorizontalAlignment="Center"
                Content="New game"
                FontSize="{Binding ElementName=NewGameUserControl, Path=LargeFont}"
                FontWeight="SemiBold" />
 
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal">
+          <RadioButton Width="100"
+                       Margin="5" Padding="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                       VerticalContentAlignment="Center"
+                       Background="White" Classes="Custom"
+                       Command="{Binding SetOpponentTypeCommand}"
+                       CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
+                       Content="AI" CornerRadius="10"
+                       FontSize="{Binding ElementName=NewGameUserControl, Path=MediumFont}"
+                       FontWeight="SemiBold" GroupName="OpponentGroup" IsChecked="True" />
+          <RadioButton Width="100"
+                       Margin="5" Padding="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                       VerticalContentAlignment="Center"
+                       Background="White" Classes="Custom"
+                       Command="{Binding SetOpponentTypeCommand}"
+                       CommandParameter="{Binding Content, RelativeSource={RelativeSource Self}}"
+                       Content="Player" CornerRadius="10"
+                       FontSize="{Binding ElementName=NewGameUserControl, Path=MediumFont}"
+                       FontWeight="SemiBold" GroupName="OpponentGroup" />
+        </StackPanel>
+
+
+
         <!--  Difficulty  -->
-        <ItemsControl Grid.Row="1" Margin="0,5,0,0" HorizontalAlignment="Center" ItemsSource="{Binding Difficulties}">
-          <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-              <StackPanel Orientation="Horizontal" />
-            </ItemsPanelTemplate>
-          </ItemsControl.ItemsPanel>
-
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-              <RadioButton Margin="5" Padding="5" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-                           VerticalContentAlignment="Center"
-                           Background="White" Classes="Custom"
-                           Command="{Binding $parent[UserControl].((vm:NewGameViewModel)DataContext).SetDifficultyCommand}"
-                           CommandParameter="{Binding Difficulty}"
-                           Content="{Binding Difficulty}"
-                           CornerRadius="10"
-                           FontSize="{Binding ElementName=NewGameUserControl, Path=MediumFont}"
-                           FontWeight="SemiBold" GroupName="DifficultyGroup"
-                           IsChecked="{Binding IsSelected}"
-                           ToolTip.Tip="{Binding Description}" />
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-        </ItemsControl>
-
-        <!--  Grid setup  -->
-        <Grid Grid.Row="2" HorizontalAlignment="Center" ColumnDefinitions="100, 100" RowDefinitions="Auto, Auto, Auto, Auto">
-
-          <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                 Margin="0,20,0,0" HorizontalAlignment="Center"
-                 Content="Grid"
-                 FontSize="{Binding ElementName=NewGameUserControl, Path=MediumFont}"
-                 FontWeight="SemiBold" />
-          <Label Grid.Row="1" Grid.Column="0"
-                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                 Content="Rows:"
-                 FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
-                 FontWeight="SemiBold" />
-          <NumericUpDown Grid.Row="2" Grid.Column="0"
-                         Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
-                         CornerRadius="5" FontSize="14" FormatString="0" Increment="1"
-                         Maximum="20" Minimum="6"
-                         Value="{Binding Game.Rows}" />
-
-          <Label Grid.Row="1" Grid.Column="1"
-                 Margin="10,0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                 Content="Columns:"
-                 FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
-                 FontWeight="SemiBold" />
-          <NumericUpDown Grid.Row="2" Grid.Column="1"
-                         Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
-                         CornerRadius="5" FontSize="14" FormatString="0" Increment="1"
-                         Maximum="20" Minimum="6"
-                         Value="{Binding Game.Columns}" />
-        </Grid>
-
-        <!--  Fleet setup  -->
-        <Grid Grid.Row="3" HorizontalAlignment="Center" RowDefinitions="Auto, Auto">
-
-          <Label Grid.Row="0"
-                 Margin="0,20,0,0" HorizontalAlignment="Center"
-                 Content="Fleet"
+        <StackPanel Grid.Row="2" Grid.Column="1"
+                    HorizontalAlignment="Center" VerticalAlignment="Top"
+                    IsVisible="{Binding IsAiViewVisible}">
+          <Label Margin="0,20,0,0" HorizontalAlignment="Center"
+                 Content="Difficulty"
                  FontSize="{Binding ElementName=NewGameUserControl, Path=MediumFont}"
                  FontWeight="SemiBold" />
 
-          <Grid Grid.Row="1" ColumnDefinitions="Auto, Auto, Auto, Auto, Auto" RowDefinitions="Auto, Auto">
-            <Label Grid.Row="0" Grid.Column="0"
-                   Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Content="Length:"
-                   FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
-                   FontWeight="SemiBold" />
-            <Label Grid.Row="0" Grid.Column="1"
-                   Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Content="2"
-                   FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
-                   FontWeight="SemiBold" />
-            <Label Grid.Row="0" Grid.Column="2"
-                   Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Content="3"
-                   FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
-                   FontWeight="SemiBold" />
-            <Label Grid.Row="0" Grid.Column="3"
-                   Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Content="4"
-                   FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
-                   FontWeight="SemiBold" />
-            <Label Grid.Row="0" Grid.Column="4"
-                   Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Content="5"
-                   FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
+          <ItemsControl Margin="0,5,0,0" ItemsSource="{Binding Difficulties}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <StackPanel Orientation="Vertical" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <RadioButton Width="150"
+                             Margin="5" Padding="5" HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+                             VerticalContentAlignment="Center"
+                             Background="White" Classes="Custom"
+                             Command="{Binding $parent[UserControl].((vm:NewGameViewModel)DataContext).SetDifficultyCommand}"
+                             CommandParameter="{Binding Difficulty}"
+                             Content="{Binding Difficulty}"
+                             CornerRadius="10"
+                             FontSize="{Binding ElementName=NewGameUserControl, Path=MediumFont}"
+                             FontWeight="SemiBold" GroupName="DifficultyGroup"
+                             IsChecked="{Binding IsSelected}"
+                             ToolTip.Tip="{Binding Description}" />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+
+        <!--  Connect  -->
+        <DockPanel Grid.Row="2" Grid.Column="1"
+                   HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                   IsVisible="{Binding IsPlayerViewVisible}"
+                   LastChildFill="True">
+
+          <StackPanel Margin="0,20,0,0" HorizontalAlignment="Center" DockPanel.Dock="Top" Orientation="Horizontal">
+            <Label HorizontalAlignment="Center"
+                   Content="Login" DockPanel.Dock="Top"
+                   FontSize="{Binding ElementName=NewGameUserControl, Path=MediumFont}"
                    FontWeight="SemiBold" />
 
+            <Border Name="ConnectionState" Width="15" Height="15" CornerRadius="7" />
+          </StackPanel>
+
+          <StackPanel Height="35"
+                      Margin="0,10,0,0" HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                      DockPanel.Dock="Top" Orientation="Horizontal" Spacing="5">
+            <TextBox Name="UsernameInput"
+                     Width="150"
+                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                     CornerRadius="5"
+                     FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
+                     FontWeight="SemiBold"
+                     Text="{Binding UserName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Watermark="Username" />
+            <Button Name="LoginBtn"
+                    Width="100"
+                    HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Command="{Binding ConnectCommand}"
+                    CommandParameter="{Binding Content, ElementName=LoginBtn}"
+                    Content="Connect" CornerRadius="5"
+                    FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
+                    FontWeight="SemiBold" />
+
+            <Interaction.Behaviors>
+              <DataTriggerBehavior Binding="{Binding IsConnected}" ComparisonCondition="Equal" Value="true">
+                <ChangePropertyAction PropertyName="Background" TargetObject="ConnectionState" Value="#ADFF2F" />
+                <ChangePropertyAction PropertyName="IsEnabled" TargetObject="UsernameInput" Value="false" />
+                <ChangePropertyAction PropertyName="Content" TargetObject="LoginBtn" Value="Disconnect" />
+              </DataTriggerBehavior>
+              <DataTriggerBehavior Binding="{Binding IsConnected}" ComparisonCondition="Equal" Value="false">
+                <ChangePropertyAction PropertyName="Background" TargetObject="ConnectionState" Value="#FF0000" />
+                <ChangePropertyAction PropertyName="IsEnabled" TargetObject="UsernameInput" Value="true" />
+                <ChangePropertyAction PropertyName="Content" TargetObject="LoginBtn" Value="Connect" />
+              </DataTriggerBehavior>
+            </Interaction.Behaviors>
+          </StackPanel>
+
+          <ListBox Margin="0,10,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                   BorderBrush="White" BorderThickness="5" CornerRadius="2" DockPanel.Dock="Top"
+                   ItemsSource="{Binding AvailablePlayers}"
+                   SelectedItem="{Binding SelectedPlayer}">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <Label Content="{Binding UserId}" />
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+
+        </DockPanel>
+
+        <Grid Grid.Row="2" Grid.Column="0" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto">
+
+          <Border Grid.Row="2" Grid.RowSpan="2"
+                  Margin="5,10,5,0"
+                  Background="#bb232323" CornerRadius="5"
+                  IsVisible="{Binding IsPlayerViewVisible}">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
+                       FontSize="20" Foreground="White" Text="Not available in multiplayer" TextWrapping="Wrap" />
+          </Border>
+
+          <!--  Grid setup  -->
+          <Grid Grid.Row="2"
+                HorizontalAlignment="Center"
+                ColumnDefinitions="100, 100"
+                IsEnabled="{Binding IsAiViewVisible}"
+                RowDefinitions="Auto, Auto, Auto, Auto">
+
+            <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                   Margin="0,20,0,0" HorizontalAlignment="Center"
+                   Content="Grid"
+                   FontSize="{Binding ElementName=NewGameUserControl, Path=MediumFont}"
+                   FontWeight="SemiBold" />
             <Label Grid.Row="1" Grid.Column="0"
-                   Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
-                   Content="Quantity:"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Content="Rows:"
                    FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
                    FontWeight="SemiBold" />
-            <NumericUpDown Grid.Row="1" Grid.Column="1"
-                           Width="50" Height="35"
-                           Margin="2"
+            <NumericUpDown Grid.Row="2" Grid.Column="0"
+                           Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
                            CornerRadius="5" FontSize="14" FormatString="0" Increment="1"
-                           Minimum="0"
-                           Value="{Binding Game.ShipLength2}" />
-            <NumericUpDown Grid.Row="1" Grid.Column="2"
-                           Width="50" Height="35"
-                           Margin="2"
+                           Maximum="20" Minimum="6"
+                           Value="{Binding Game.Rows}" />
+
+            <Label Grid.Row="1" Grid.Column="1"
+                   Margin="10,0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Content="Columns:"
+                   FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
+                   FontWeight="SemiBold" />
+            <NumericUpDown Grid.Row="2" Grid.Column="1"
+                           Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
                            CornerRadius="5" FontSize="14" FormatString="0" Increment="1"
-                           Minimum="0"
-                           Value="{Binding Game.ShipLength3}" />
-            <NumericUpDown Grid.Row="1" Grid.Column="3"
-                           Width="50" Height="35"
-                           Margin="2"
-                           CornerRadius="5" FontSize="14" FormatString="0" Increment="1"
-                           Minimum="0"
-                           Value="{Binding Game.ShipLength4}" />
-            <NumericUpDown Grid.Row="1" Grid.Column="4"
-                           Width="50" Height="35"
-                           Margin="2"
-                           CornerRadius="5" FontSize="14" FormatString="0" Increment="1"
-                           Minimum="0"
-                           Value="{Binding Game.ShipLength5}" />
+                           Maximum="20" Minimum="6"
+                           Value="{Binding Game.Columns}" />
+          </Grid>
+
+          <!--  Fleet setup  -->
+          <Grid Grid.Row="3" HorizontalAlignment="Center" IsEnabled="{Binding IsAiViewVisible}" RowDefinitions="Auto, Auto">
+
+            <Label Grid.Row="0"
+                   Margin="0,20,0,0" HorizontalAlignment="Center"
+                   Content="Fleet"
+                   FontSize="{Binding ElementName=NewGameUserControl, Path=MediumFont}"
+                   FontWeight="SemiBold" />
+
+            <Grid Grid.Row="1" ColumnDefinitions="Auto, Auto, Auto, Auto, Auto" RowDefinitions="Auto, Auto">
+              <Label Grid.Row="0" Grid.Column="0"
+                     Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Content="Length:"
+                     FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
+                     FontWeight="SemiBold" />
+              <Label Grid.Row="0" Grid.Column="1"
+                     Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Content="2"
+                     FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
+                     FontWeight="SemiBold" />
+              <Label Grid.Row="0" Grid.Column="2"
+                     Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Content="3"
+                     FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
+                     FontWeight="SemiBold" />
+              <Label Grid.Row="0" Grid.Column="3"
+                     Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Content="4"
+                     FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
+                     FontWeight="SemiBold" />
+              <Label Grid.Row="0" Grid.Column="4"
+                     Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Content="5"
+                     FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
+                     FontWeight="SemiBold" />
+
+              <Label Grid.Row="1" Grid.Column="0"
+                     Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Content="Quantity:"
+                     FontSize="{Binding ElementName=NewGameUserControl, Path=SmallFont}"
+                     FontWeight="SemiBold" />
+              <NumericUpDown Grid.Row="1" Grid.Column="1"
+                             Width="50" Height="35"
+                             Margin="2"
+                             CornerRadius="5" FontSize="14" FormatString="0" Increment="1"
+                             Minimum="0"
+                             Value="{Binding Game.ShipLength2}" />
+              <NumericUpDown Grid.Row="1" Grid.Column="2"
+                             Width="50" Height="35"
+                             Margin="2"
+                             CornerRadius="5" FontSize="14" FormatString="0" Increment="1"
+                             Minimum="0"
+                             Value="{Binding Game.ShipLength3}" />
+              <NumericUpDown Grid.Row="1" Grid.Column="3"
+                             Width="50" Height="35"
+                             Margin="2"
+                             CornerRadius="5" FontSize="14" FormatString="0" Increment="1"
+                             Minimum="0"
+                             Value="{Binding Game.ShipLength4}" />
+              <NumericUpDown Grid.Row="1" Grid.Column="4"
+                             Width="50" Height="35"
+                             Margin="2"
+                             CornerRadius="5" FontSize="14" FormatString="0" Increment="1"
+                             Minimum="0"
+                             Value="{Binding Game.ShipLength5}" />
+            </Grid>
           </Grid>
 
         </Grid>
 
         <!--  Start game  -->
-        <Button Grid.Row="4"
+        <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
                 Margin="0,40,0,10" Padding="20" HorizontalAlignment="Center"
-                Command="{Binding ElementName=NewGameUserControl, Path=StartGameCommand}"
-                Content="Start game" CornerRadius="10"
+                Command="{Binding StartGameCommand}"
+                Content="{Binding StartButtonText}"
+                CornerRadius="10"
                 FontSize="{Binding ElementName=NewGameUserControl, Path=MediumFont}"
                 FontWeight="SemiBold" />
       </Grid>
