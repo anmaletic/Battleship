@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Vsite.Oom.Battleship.Model;
 
@@ -16,7 +17,13 @@ public class Game(SquareEliminator eliminator)
     private readonly SquareEliminator _eliminator = eliminator;
     
     public GameDifficulty Difficulty { get; set; } = GameDifficulty.Normal;
+    
+    public bool IsPlayerTurn { get; set; } = true;
 
+    public string OpponentType { get; set; } = "AI";
+    public User OpponentUser { get; set; } = new();
+    public List<ShipDto> Ships { get; set; } = new();
+    
     public int Rows { get; set; } = 10;
     public int Columns { get; set; } = 10;
 
@@ -55,7 +62,7 @@ public class Game(SquareEliminator eliminator)
     }
 
     public Player Player { get; } = new();
-    private Player Opponent { get; } = new();
+    public Player Opponent { get; set; } = new();
 
     public void NewGame()
     {
@@ -86,7 +93,7 @@ public class Game(SquareEliminator eliminator)
         }
     }
 
-    public void OpponentAttack()
+    public void OpponentAiAttack()
     {
         var target = Opponent.Gunnery.Next();
 
@@ -108,6 +115,71 @@ public class Game(SquareEliminator eliminator)
             ShipIsMissed(target, Opponent, Player);
         }
     }
+
+    public HitResult OpponentPlayerAttack(DisplaySquare target)
+    {
+        var result = Player.Fleet.Hit(target.Row, target.Column);
+
+        switch (result)
+        {
+            case HitResult.Hit:
+                target.ChangeState(SquareState.Hit);
+                Player.FleetBoard[target.Row][target.Column].ChangeState(SquareState.Hit);
+                break;
+            case HitResult.Sunken:
+            {
+                foreach (var ship in Player.Fleet.Ships)
+                {
+                    if (ship.Squares.Any(square => square.Row == target.Row && square.Column == target.Column))
+                    {
+                        foreach (var sunkSquare in ship.Squares)
+                        {
+                            target.ChangeState(SquareState.Sunken);
+                            Player.FleetBoard[sunkSquare.Row][sunkSquare.Column].ChangeState(SquareState.Sunken);
+                        }
+                        break;
+                    }
+                }   
+                break;
+            }
+            default:
+                target.ChangeState(SquareState.Missed);
+                Player.FleetBoard[target.Row][target.Column].ChangeState(SquareState.Missed);
+                break;
+        }
+
+        return result;
+    }
+    
+    public void OpponentAttackResult(HitResult result, DisplaySquare target)
+    {
+        switch (result)
+        {
+            case HitResult.Hit:
+                Player.ShotsBoard[target.Row][target.Column].ChangeState(SquareState.Hit);
+                break;
+            case HitResult.Sunken:
+            {
+                foreach (var ship in Ships)
+                {
+                    if (ship.Squares.Any(square => square.Row == target.Row && square.Column == target.Column))
+                    {
+                        foreach (var sunkSquare in ship.Squares)
+                        {
+                            Player.ShotsBoard[sunkSquare.Row][sunkSquare.Column].ChangeState(SquareState.Sunken);
+                        }
+                        break;
+                    }
+                }   
+                break;
+            }
+            default:
+                Player.ShotsBoard[target.Row][target.Column].ChangeState(SquareState.Missed);
+                break;
+        }
+    }
+    
+    
     
     private void ShipIsHit(Square target, Square shipSquare, Player attacker, Player defender)
     {
@@ -162,5 +234,10 @@ public class Game(SquareEliminator eliminator)
         return isPlayer
             ? Opponent.Fleet.Ships.SelectMany(s => s.Squares).All(ship => ship.SquareState != SquareState.Intact)
             : Player.Fleet.Ships.SelectMany(s => s.Squares).All(ship => ship.SquareState != SquareState.Intact);
+    }
+    
+    public bool IsOpponentWinner()
+    {
+        return Player.Fleet.Ships.SelectMany(s => s.Squares).All(ship => ship.SquareState != SquareState.Intact);
     }
 }
