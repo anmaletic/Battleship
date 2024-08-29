@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Vsite.Oom.Battleship.GUI.Models;
 
 namespace Vsite.Oom.Battleship.GUI.Controls;
@@ -41,6 +42,13 @@ public partial class ShotsBoardControl : UserControl
     {
         get => GetValue(CellSizeProperty);
         set => SetValue(CellSizeProperty, value);
+    }
+    
+    public static readonly StyledProperty<IImmutableSolidColorBrush> ItemsBackgroundProperty = AvaloniaProperty.Register<FleetBoardControl, IImmutableSolidColorBrush>(nameof(ItemsBackground));
+    public IImmutableSolidColorBrush ItemsBackground
+    {
+        get => GetValue(ItemsBackgroundProperty);
+        set => SetValue(ItemsBackgroundProperty, value);
     }
 
 }

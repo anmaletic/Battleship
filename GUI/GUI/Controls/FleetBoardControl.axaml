@@ -8,18 +8,22 @@
              x:Name="FleetBoard"
              Padding="20,10,20,20"
              x:DataType="viewModels:GameViewModel"
-             Background="{DynamicResource Accent}"
+             Background="{DynamicResource AccentColor}"
              CornerRadius="10"
              mc:Ignorable="d">
   <Grid RowDefinitions="Auto, *">
     <Label Grid.Row="0"
            HorizontalAlignment="Center"
            Content="Fleet" FontSize="36" FontWeight="SemiBold" />
-    <ItemsControl Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" ItemsSource="{Binding ElementName=FleetBoard, Path=Source}">
+    <ItemsControl Grid.Row="1"
+                  Padding="10" HorizontalAlignment="Center" VerticalAlignment="Top"
+                  Background="{Binding ElementName=FleetBoard, Path=ItemsBackground}"
+                  CornerRadius="10"
+                  ItemsSource="{Binding ElementName=FleetBoard, Path=Source}">
       <ItemsControl.ItemTemplate>
         <DataTemplate>
 
-          <ItemsControl HorizontalAlignment="Center" VerticalAlignment="Center" Background="Gray" ItemsSource="{Binding .}">
+          <ItemsControl HorizontalAlignment="Center" VerticalAlignment="Center" ItemsSource="{Binding .}">
             <ItemsControl.ItemsPanel>
               <ItemsPanelTemplate>
                 <StackPanel Orientation="Horizontal" />
@@ -47,6 +51,11 @@
                     <!--  Hit  -->
                     <DataTriggerBehavior Binding="{Binding SquareState}" ComparisonCondition="Equal" Value="Hit">
                       <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource HitColor}" />
+                    </DataTriggerBehavior>
+
+                    <!--  Sunken  -->
+                    <DataTriggerBehavior Binding="{Binding SquareState}" ComparisonCondition="Equal" Value="Sunken">
+                      <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource SunkenColor}" />
                     </DataTriggerBehavior>
                   </Interaction.Behaviors>
                 </Border>
