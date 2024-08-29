@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using System.Drawing;
+using Microsoft.AspNetCore.SignalR;
+using Vsite.Oom.Battleship.GUI.Models;
+using Vsite.Oom.Battleship.Model;
 
 namespace GameServer.Hubs;
 
@@ -27,6 +30,8 @@ public class GameHub : Hub
             Console.WriteLine($"User {user.UserId} disconnected");
         }
         await base.OnDisconnectedAsync(exception);
+        
+        GetAvailablePlayers();
     }
     
     public void Login(string userId)
@@ -63,14 +68,15 @@ public class GameHub : Hub
         }
     }
     
-    public async Task ChallengePlayer(string userId)
+    public async Task ChallengePlayer(string targetId)
     {
         try
         {
-            var user = Users.Find(u => u.UserId == userId);
-            if (user?.ConnectionId != null)
+            var target = Users.Find(u => u.ConnectionId == targetId);
+            var source = Users.Find(u => u.ConnectionId == Context.ConnectionId);
+            if (target?.ConnectionId != null)
             {
-                await Clients.Client(user.ConnectionId).SendAsync("ReceiveChallenge", Context.ConnectionId);
+                await Clients.Client(target.ConnectionId).SendAsync("ReceiveChallenge", source);
             }
         }
         catch (Exception e)
@@ -79,14 +85,15 @@ public class GameHub : Hub
         }
     }
     
-    public async Task AcceptChallenge(string challengerId)
+    public async Task ChallengeResponse(string targetId, string response)
     {
         try
         {
-            var challenger = Users.Find(u => u.ConnectionId == challengerId);
-            if (challenger?.ConnectionId != null)
+            var target = Users.Find(u => u.ConnectionId == targetId);
+            var source = Users.Find(u => u.ConnectionId == Context.ConnectionId);
+            if (target?.ConnectionId != null)
             {
-                await Clients.Client(challenger.ConnectionId).SendAsync("ChallengeAccepted", Context.ConnectionId);
+                await Clients.Client(target.ConnectionId).SendAsync("ReceiveChallengeResponse", source, response);
             }
         }
         catch (Exception e)
@@ -95,14 +102,15 @@ public class GameHub : Hub
         }
     }
     
-    public async Task DeclineChallenge(string challengerId)
+    public async Task TransferPlayerData(string targetId, List<ShipDto> data)
     {
         try
         {
-            var challenger = Users.Find(u => u.ConnectionId == challengerId);
-            if (challenger?.ConnectionId != null)
+            var target = Users.Find(u => u.ConnectionId == targetId);
+            var source = Users.Find(u => u.ConnectionId == Context.ConnectionId);
+            if (target?.ConnectionId != null)
             {
-                await Clients.Client(challenger.ConnectionId).SendAsync("ChallengeDeclined", Context.ConnectionId);
+                await Clients.Client(target.ConnectionId).SendAsync("ReceivePlayerData", source, data);
             }
         }
         catch (Exception e)
@@ -111,30 +119,44 @@ public class GameHub : Hub
         }
     }
     
-    public async Task Move(string opponentId, string move)
+    public async Task AttackPlayer(string targetId, Point targetCell)
     {
         try
         {
-            var opponent = Users.Find(u => u.UserId == opponentId);
-            if (opponent?.ConnectionId != null)
+            var target = Users.Find(u => u.ConnectionId == targetId);
+            var source = Users.Find(u => u.ConnectionId == Context.ConnectionId);
+            if (target?.ConnectionId != null)
             {
-                await Clients.Client(opponent.ConnectionId).SendAsync("ReceiveMove", move);
+                await Clients.Client(target.ConnectionId).SendAsync("ReceiveAttack", source, targetCell);
             }
+            
+            Console.WriteLine($"{source!.UserId} attacked {targetCell.X}, {targetCell.Y}");
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
     }
+
+    public async Task AttackResult(string targetId, HitResult result)
+    {
+        var target = Users.Find(u => u.ConnectionId == targetId);
+        var source = Users.Find(u => u.ConnectionId == Context.ConnectionId);
+        if (target?.ConnectionId != null)
+        {
+            await Clients.Client(target.ConnectionId).SendAsync("ReceiveAttackResult", source, result);
+        }
+    }
     
-    public async Task GameOver(string opponentId, string result)
+    public async Task GameOver(string targetId, string result)
     {
         try
         {
-            var opponent = Users.Find(u => u.UserId == opponentId);
-            if (opponent?.ConnectionId != null)
+            var target = Users.Find(u => u.ConnectionId == targetId);
+            var source = Users.Find(u => u.ConnectionId == Context.ConnectionId);
+            if (target?.ConnectionId != null)
             {
-                await Clients.Client(opponent.ConnectionId).SendAsync("ReceiveGameOver", result);
+                await Clients.Client(target.ConnectionId).SendAsync("ReceiveGameOver", source, result);
             }
         }
         catch (Exception e)
