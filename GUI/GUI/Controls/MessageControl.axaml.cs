@@ -20,8 +20,9 @@ public partial class MessageControl : UserControl
         set => SetValue(MessageProperty, value);
     }
 
-    public void CloseCommand()
+    public void CloseCommand(Btn btn)
     {
+        Message.Closed(btn);
         Message.IsVisible = false;
     }
 }
