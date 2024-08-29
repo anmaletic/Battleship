@@ -13,7 +13,5 @@ public partial class MainView : UserControl
     {
         if (DataContext is not ViewModels.MainViewModel viewModel)
             return;
-
-        viewModel.IsVertical = e.NewSize.Width < e.NewSize.Height;
     }
 }

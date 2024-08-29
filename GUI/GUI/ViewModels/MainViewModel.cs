@@ -12,26 +12,34 @@ namespace Vsite.Oom.Battleship.GUI.ViewModels;
 
 public partial class MainViewModel : ObservableRecipient
 {
-    public bool IsVertical { get; set; }
     [ObservableProperty] private UserControl? _currentView;
     [ObservableProperty] private DisplayMessage _message = new();
 
     public MainViewModel()
     {
-        WeakReferenceMessenger.Default.Register<ChangeSettingsMessage>(this, (r, m) =>
+        WeakReferenceMessenger.Default.Register<StartGameMessage>(this, (_, _) =>
         {
-            DispalyNewGameView();
+            StartGame();
         });
         
-        DispalyNewGameView();
+        WeakReferenceMessenger.Default.Register<ChangeSettingsMessage>(this, (_, _) =>
+        {
+            DisplayNewGameView();
+        });
+
+        WeakReferenceMessenger.Default.Register<DisplayDialogMessage>(this, (_, m) =>
+        {
+            DisplayDialog(m.Msg);
+        });
+        
+        DisplayNewGameView();
     }
 
-    private void DispalyNewGameView()
+    private void DisplayNewGameView()
     {
         CurrentView = new NewGameView()
         {
             DataContext = Ioc.Default.GetService<NewGameViewModel>(),
-            StartGameCommand = StartGameCommand,
             IsVertical = false
         };
     }
@@ -41,11 +49,20 @@ public partial class MainViewModel : ObservableRecipient
     {
         try
         {
-            CurrentView = new GameView { DataContext = Ioc.Default.GetService<GameViewModel>() };
+            Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                CurrentView = new GameView { DataContext = Ioc.Default.GetService<GameViewModel>() };
+            });
+
         }
-        catch (Exception e)
+        catch (Exception)
         {
             Message = new DisplayMessage { Title = "Error", Content = "Unable to create game.\nCheck parameters.", IsVisible = true };
         }
+    }
+
+    private void DisplayDialog(DisplayMessage msg)
+    {
+        Message = msg;
     }
 }
