@@ -50,7 +50,7 @@ public class GameServerService : IGameServerService
     public GameServerService()
     {
         _hubConnection = new HubConnectionBuilder()
-            .WithUrl("https://localhost:7111/gamehub", options =>
+            .WithUrl("https://battleship-server.anmal.dev/gamehub", options =>
             {
                 options.AccessTokenProvider = async () => await Task.FromResult("YourAccessToken");
                 options.Transports = HttpTransportType.WebSockets;
