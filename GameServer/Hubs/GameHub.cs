@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Vsite.Oom.Battleship.GUI.Models;
 using Vsite.Oom.Battleship.Model;
 
@@ -125,7 +124,7 @@ public class GameHub : Hub
         }
     }
     
-    public async Task AttackPlayer(string targetId, Point targetCell)
+    public async Task AttackPlayer(string targetId, SquareDto targetCell)
     {
         try
         {
@@ -136,7 +135,7 @@ public class GameHub : Hub
                 await Clients.Client(target.ConnectionId).SendAsync("ReceiveAttack", source, targetCell);
             }
             
-            Console.WriteLine($"{source!.UserId} attacked {target!.UserId} {targetCell.X}, {targetCell.Y}");
+            Console.WriteLine($"{source!.UserId} attacked {target!.UserId} {targetCell.Row}, {targetCell.Column}");
         }
         catch (Exception e)
         {

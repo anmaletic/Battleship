@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -28,12 +27,12 @@ public partial class GameViewModel : ViewModelBase
         _gameServer.AttackResultReceived += AttackResultReceived;
         _gameServer.PlayerDataReceived += PlayerDataReceived;
         _gameServer.GameOverReceived += GameOverReceived;
-        
+
         _game.NewGame();
 
         var ships = Game.Player.Fleet.Ships;
         List<ShipDto> shipsDto = [];
-        
+
         foreach (var ship in ships)
         {
             var shipDto = new ShipDto();
@@ -46,10 +45,10 @@ public partial class GameViewModel : ViewModelBase
                     SquareState = square.SquareState
                 });
             }
-            
+
             shipsDto.Add(shipDto);
         }
-        
+
         _gameServer.TransferPlayerData(Game.OpponentUser, shipsDto);
 
         IsPlayerTurn = Game.IsPlayerTurn;
@@ -63,21 +62,21 @@ public partial class GameViewModel : ViewModelBase
     {
         Game.Ships = ships;
     }
-    
+
     private void AttackResultReceived(User source, HitResult result)
     {
-        DisplaySquare target = Game.Player.ShotsBoard[_targetCell.X][_targetCell.Y];
+        DisplaySquare target = Game.Player.ShotsBoard[_targetCell.Row][_targetCell.Column];
         Game.OpponentAttackResult(result, target);
     }
-    
-    private void AttackReceived(User source, Point targetCell)
+
+    private void AttackReceived(User source, SquareDto targetCell)
     {
         IsPlayerTurn = true;
-        DisplaySquare target = Game.Player.FleetBoard[targetCell.X][targetCell.Y];
-        
+        DisplaySquare target = Game.Player.FleetBoard[targetCell.Row][targetCell.Column];
+
         var result = Game.OpponentPlayerAttack(target);
         _gameServer.AttackResult(Game.OpponentUser, result);
-        
+
         if (Game.IsOpponentWinner())
         {
             Message = "You lost!";
@@ -85,7 +84,7 @@ public partial class GameViewModel : ViewModelBase
         }
     }
 
-    Point _targetCell = new Point();
+    SquareDto _targetCell = new();
 
     [RelayCommand(CanExecute = nameof(CanShoot))]
     private void Shoot(DisplaySquare target)
@@ -105,14 +104,14 @@ public partial class GameViewModel : ViewModelBase
         else
         {
             if (!IsPlayerTurn) return;
-            
-            _targetCell = new Point(target.Row, target.Column);
-            _gameServer.AttackPlayer(Game.OpponentUser, new Point(target.Row, target.Column));
+
+            _targetCell = new SquareDto() { Row = target.Row, Column = target.Column };
+            _gameServer.AttackPlayer(Game.OpponentUser, new SquareDto() { Row = target.Row, Column = target.Column });
             IsPlayerTurn = false;
         }
     }
-    
-    
+
+
     private bool CanShoot(DisplaySquare? square)
     {
         return square?.SquareState == SquareState.Intact;

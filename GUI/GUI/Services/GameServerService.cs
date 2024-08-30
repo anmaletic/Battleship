@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -21,7 +20,7 @@ public interface IGameServerService
     Task ChallengeResponse(User challenger, string response);
     Task TransferPlayerData(User target, List<ShipDto> data);
     
-    Task AttackPlayer(User user, Point targetCell);
+    Task AttackPlayer(User user, SquareDto targetCell);
     Task AttackResult(User target, HitResult result);
     Task NotifyGameOver(User target, string gameState);
     
@@ -29,7 +28,7 @@ public interface IGameServerService
     event Action<User>? ChallengeReceived;
     event Action<User, string>? ChallengeResponseReceived;
     event Action<User, List<ShipDto>>? PlayerDataReceived;
-    event Action<User, Point>? AttackReceived;
+    event Action<User, SquareDto>? AttackReceived;
     event Action<User, HitResult>? AttackResultReceived;
     event Action<User, string>? GameOverReceived;
 }
@@ -43,7 +42,7 @@ public class GameServerService : IGameServerService
     public event Action<User>? ChallengeReceived;
     public event Action<User, string>? ChallengeResponseReceived;
     public event Action<User, List<ShipDto>>? PlayerDataReceived;
-    public event Action<User, Point>? AttackReceived;
+    public event Action<User, SquareDto>? AttackReceived;
     public event Action<User, HitResult>? AttackResultReceived;
     public event Action<User, string>? GameOverReceived;
     
@@ -61,7 +60,7 @@ public class GameServerService : IGameServerService
         _hubConnection.On<List<User>>("ReceiveAvailablePlayers", (players) => AvailablePlayersReceived?.Invoke(players));
         _hubConnection.On<User>("ReceiveChallenge", source => ChallengeReceived?.Invoke(source));
         _hubConnection.On<User, string>("ReceiveChallengeResponse", (source, response) => ChallengeResponseReceived?.Invoke(source, response));
-        _hubConnection.On<User, Point>("ReceiveAttack", (source, target) => AttackReceived?.Invoke(source, target));
+        _hubConnection.On<User, SquareDto>("ReceiveAttack", (source, target) => AttackReceived?.Invoke(source, target));
         _hubConnection.On<User, HitResult>("ReceiveAttackResult", (source, result) => AttackResultReceived?.Invoke(source, result));
         _hubConnection.On<User, List<ShipDto>>("ReceivePlayerData", (source, data) => PlayerDataReceived?.Invoke(source, data));
         _hubConnection.On<User, string>("ReceiveGameOver", (source, data) => GameOverReceived?.Invoke(source, data));
@@ -120,7 +119,7 @@ public class GameServerService : IGameServerService
     {
         await _hubConnection.InvokeAsync("ChallengeResponse", target.ConnectionId, response);
     }
-    public async Task AttackPlayer(User target, Point targetCell)
+    public async Task AttackPlayer(User target, SquareDto targetCell)
     {
         await _hubConnection.InvokeAsync("AttackPlayer", target.ConnectionId, targetCell);
     }
