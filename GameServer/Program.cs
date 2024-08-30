@@ -7,7 +7,24 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSignalR();
+builder.Services.AddSignalR().AddHubOptions<GameHub>(options =>
+{
+    options.EnableDetailedErrors = true;
+});
+
+builder.Services.AddCors(policy=>
+{
+    policy.AddPolicy("OpenCorsPolicy",opt=>opt
+        .WithOrigins(
+            "http://localhost:7200",
+            "https://localhost:7201",           
+            "http://localhost:7300",
+            "https://localhost:7301",
+            "https://battleship.anmal.dev")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials());
+}); 
 
 var app = builder.Build();
 
@@ -19,32 +36,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("OpenCorsPolicy");
+app.UseStaticFiles();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-    {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast")
-    .WithOpenApi();
-
-app.MapHub<GameHub>("/gamehub").WithOpenApi();
+app.MapHub<GameHub>("/gamehub");
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
