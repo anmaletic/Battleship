@@ -4,67 +4,68 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="clr-namespace:Vsite.Oom.Battleship.GUI.Models"
-             xmlns:viewModels="clr-namespace:Vsite.Oom.Battleship.GUI.ViewModels"
              x:Name="FleetBoard"
              Padding="20,10,20,20"
-             x:DataType="viewModels:GameViewModel"
              Background="{DynamicResource AccentColor}"
              CornerRadius="10"
              mc:Ignorable="d">
+
   <Grid RowDefinitions="Auto, *">
     <Label Grid.Row="0"
            HorizontalAlignment="Center"
            Content="Fleet" FontSize="36" FontWeight="SemiBold" />
-    <ItemsControl Grid.Row="1"
-                  Padding="10" HorizontalAlignment="Center" VerticalAlignment="Top"
-                  Background="{Binding ElementName=FleetBoard, Path=ItemsBackground}"
-                  CornerRadius="10"
-                  ItemsSource="{Binding ElementName=FleetBoard, Path=Source}">
-      <ItemsControl.ItemTemplate>
-        <DataTemplate>
+    <Border Grid.Row="1"
+            HorizontalAlignment="Center" VerticalAlignment="Top"
+            BorderBrush="{Binding ElementName=FleetBoard, Path=ItemsBackground}"
+            BorderThickness="8" CornerRadius="2">
 
-          <ItemsControl HorizontalAlignment="Center" VerticalAlignment="Center" ItemsSource="{Binding .}">
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <StackPanel Orientation="Horizontal" />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
+      <ItemsControl Margin="2" ItemsSource="{Binding ElementName=FleetBoard, Path=Source}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
 
-            <ItemsControl.ItemTemplate>
-              <DataTemplate x:DataType="models:DisplaySquare">
-                <Border Name="ShipCell"
-                        Width="{Binding ElementName=FleetBoard, Path=CellSize}"
-                        Height="{Binding ElementName=FleetBoard, Path=CellSize}"
-                        Background="{StaticResource CellColor}"
-                        BorderThickness="1" CornerRadius="2">
-                  <Interaction.Behaviors>
-                    <!--  Ship  -->
-                    <DataTriggerBehavior Binding="{Binding IsShip}" ComparisonCondition="Equal" Value="True">
-                      <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource ShipColor}" />
-                    </DataTriggerBehavior>
+            <ItemsControl HorizontalAlignment="Center" VerticalAlignment="Center" ItemsSource="{Binding .}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
 
-                    <!--  Missed  -->
-                    <DataTriggerBehavior Binding="{Binding SquareState}" ComparisonCondition="Equal" Value="Missed">
-                      <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource MissedColor}" />
-                    </DataTriggerBehavior>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="models:DisplaySquare">
+                  <Border Name="ShipCell"
+                          Width="{Binding ElementName=FleetBoard, Path=CellSize}"
+                          Height="{Binding ElementName=FleetBoard, Path=CellSize}"
+                          Background="{StaticResource CellColor}"
+                          BorderThickness="1" CornerRadius="2">
+                    <Interaction.Behaviors>
+                      <!--  Ship  -->
+                      <DataTriggerBehavior Binding="{Binding IsShip}" ComparisonCondition="Equal" Value="True">
+                        <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource ShipColor}" />
+                      </DataTriggerBehavior>
 
-                    <!--  Hit  -->
-                    <DataTriggerBehavior Binding="{Binding SquareState}" ComparisonCondition="Equal" Value="Hit">
-                      <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource HitColor}" />
-                    </DataTriggerBehavior>
+                      <!--  Missed  -->
+                      <DataTriggerBehavior Binding="{Binding SquareState}" ComparisonCondition="Equal" Value="Missed">
+                        <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource MissedColor}" />
+                      </DataTriggerBehavior>
 
-                    <!--  Sunken  -->
-                    <DataTriggerBehavior Binding="{Binding SquareState}" ComparisonCondition="Equal" Value="Sunken">
-                      <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource SunkenColor}" />
-                    </DataTriggerBehavior>
-                  </Interaction.Behaviors>
-                </Border>
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
+                      <!--  Hit  -->
+                      <DataTriggerBehavior Binding="{Binding SquareState}" ComparisonCondition="Equal" Value="Hit">
+                        <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource HitColor}" />
+                      </DataTriggerBehavior>
 
-        </DataTemplate>
-      </ItemsControl.ItemTemplate>
-    </ItemsControl>
+                      <!--  Sunken  -->
+                      <DataTriggerBehavior Binding="{Binding SquareState}" ComparisonCondition="Equal" Value="Sunken">
+                        <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource SunkenColor}" />
+                      </DataTriggerBehavior>
+                    </Interaction.Behaviors>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </Border>
   </Grid>
 </UserControl>

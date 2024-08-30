@@ -10,72 +10,73 @@
              CornerRadius="10"
              mc:Ignorable="d">
 
-
   <Grid RowDefinitions="Auto, *">
     <Label Grid.Row="0"
            HorizontalAlignment="Center"
            Content="Shots" FontSize="36" FontWeight="SemiBold" />
-    <ItemsControl Grid.Row="1"
-                  Padding="10" HorizontalAlignment="Center" VerticalAlignment="Top"
-                  Background="{Binding ElementName=ShotsBoard, Path=ItemsBackground}"
-                  CornerRadius="10 "
-                  ItemsSource="{Binding ElementName=ShotsBoard, Path=Source}">
-      <ItemsControl.ItemTemplate>
-        <DataTemplate>
+    <Border Grid.Row="1"
+            HorizontalAlignment="Center" VerticalAlignment="Top"
+            BorderBrush="{Binding ElementName=ShotsBoard, Path=ItemsBackground}"
+            BorderThickness="8" CornerRadius="2">
 
-          <ItemsControl HorizontalAlignment="Center" VerticalAlignment="Center" Background="Gray" ItemsSource="{Binding .}">
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <StackPanel Orientation="Horizontal" />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
+      <ItemsControl Margin="2" ItemsSource="{Binding ElementName=ShotsBoard, Path=Source}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
 
-            <ItemsControl.ItemTemplate>
-              <DataTemplate DataType="models:DisplaySquare">
-                <Button Name="ShipCell"
-                        Width="{Binding ElementName=ShotsBoard, Path=CellSize}"
-                        Height="{Binding ElementName=ShotsBoard, Path=CellSize}"
-                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                        Background="{StaticResource CellColor}"
-                        BorderThickness="1"
-                        Command="{Binding ElementName=ShotsBoard, Path=ShootCommand}"
-                        CommandParameter="{Binding .}"
-                        CornerRadius="2">
-                  <Interaction.Behaviors>
+            <ItemsControl HorizontalAlignment="Center" VerticalAlignment="Center" Background="Gray" ItemsSource="{Binding .}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
 
-                    <!--  Ship  -->
-                    <DataTriggerBehavior Binding="{Binding IsShip}" ComparisonCondition="Equal" Value="True">
-                      <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource ShipColor}" />
-                    </DataTriggerBehavior>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="models:DisplaySquare">
+                  <Button Name="ShipCell"
+                          Width="{Binding ElementName=ShotsBoard, Path=CellSize}"
+                          Height="{Binding ElementName=ShotsBoard, Path=CellSize}"
+                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                          Background="{StaticResource CellColor}"
+                          BorderThickness="1"
+                          Command="{Binding ElementName=ShotsBoard, Path=ShootCommand}"
+                          CommandParameter="{Binding .}"
+                          CornerRadius="2">
+                    <Interaction.Behaviors>
 
-                    <!--  Eliminated  -->
-                    <DataTriggerBehavior Binding="{Binding SquareState}" ComparisonCondition="Equal" Value="Eliminated">
-                      <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource EliminatedColor}" />
-                    </DataTriggerBehavior>
+                      <!--  Ship  -->
+                      <DataTriggerBehavior Binding="{Binding IsShip}" ComparisonCondition="Equal" Value="True">
+                        <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource ShipColor}" />
+                      </DataTriggerBehavior>
 
-                    <!--  Missed  -->
-                    <DataTriggerBehavior Binding="{Binding SquareState}" ComparisonCondition="Equal" Value="Missed">
-                      <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource MissedColor}" />
-                    </DataTriggerBehavior>
+                      <!--  Eliminated  -->
+                      <DataTriggerBehavior Binding="{Binding SquareState}" ComparisonCondition="Equal" Value="Eliminated">
+                        <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource EliminatedColor}" />
+                      </DataTriggerBehavior>
 
-                    <!--  Hit  -->
-                    <DataTriggerBehavior Binding="{Binding SquareState}" ComparisonCondition="Equal" Value="Hit">
-                      <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource HitColor}" />
-                    </DataTriggerBehavior>
+                      <!--  Missed  -->
+                      <DataTriggerBehavior Binding="{Binding SquareState}" ComparisonCondition="Equal" Value="Missed">
+                        <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource MissedColor}" />
+                      </DataTriggerBehavior>
 
-                    <!--  Sunken  -->
-                    <DataTriggerBehavior Binding="{Binding SquareState}" ComparisonCondition="Equal" Value="Sunken">
-                      <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource SunkenColor}" />
-                    </DataTriggerBehavior>
+                      <!--  Hit  -->
+                      <DataTriggerBehavior Binding="{Binding SquareState}" ComparisonCondition="Equal" Value="Hit">
+                        <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource HitColor}" />
+                      </DataTriggerBehavior>
 
-                  </Interaction.Behaviors>
-                </Button>
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-          </ItemsControl>
+                      <!--  Sunken  -->
+                      <DataTriggerBehavior Binding="{Binding SquareState}" ComparisonCondition="Equal" Value="Sunken">
+                        <ChangePropertyAction PropertyName="Background" TargetObject="{Binding #ShipCell}" Value="{StaticResource SunkenColor}" />
+                      </DataTriggerBehavior>
 
-        </DataTemplate>
-      </ItemsControl.ItemTemplate>
-    </ItemsControl>
+                    </Interaction.Behaviors>
+                  </Button>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </Border>
   </Grid>
 </UserControl>
