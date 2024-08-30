@@ -11,6 +11,8 @@
   <Color x:Key="SunkenColor">#7C2F22</Color>
   <Color x:Key="EliminatedColor">#A66D60</Color>
 
+  <Color x:Key="SelectedBoardColor">#2C5F6F</Color>
+
   <SolidColorBrush x:Key="Primary" Color="{StaticResource PrimaryColor}" />
   <SolidColorBrush x:Key="Accent" Color="{StaticResource AccentColor}" />
 </ResourceDictionary>

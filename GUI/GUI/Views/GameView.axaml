@@ -28,7 +28,6 @@
         <controls:FleetBoardControl Name="FleetBoard"
                                     Grid.Row="0" Grid.Column="0"
                                     Margin="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                    ItemsBackground="Red"
                                     Source="{Binding Game.Player.FleetBoard}" />
 
         <!--  Player Shots Board  -->
@@ -41,10 +40,10 @@
         <Interaction.Behaviors>
           <DataTriggerBehavior Binding="{Binding IsPlayerTurn}" ComparisonCondition="Equal" Value="True">
             <ChangePropertyAction PropertyName="ItemsBackground" TargetObject="FleetBoard" Value="{DynamicResource AccentColor}" />
-            <ChangePropertyAction PropertyName="ItemsBackground" TargetObject="ShotsBoard" Value="#024c54" />
+            <ChangePropertyAction PropertyName="ItemsBackground" TargetObject="ShotsBoard" Value="{StaticResource SelectedBoardColor}" />
           </DataTriggerBehavior>
           <DataTriggerBehavior Binding="{Binding IsPlayerTurn}" ComparisonCondition="Equal" Value="False">
-            <ChangePropertyAction PropertyName="ItemsBackground" TargetObject="FleetBoard" Value="#024c54" />
+            <ChangePropertyAction PropertyName="ItemsBackground" TargetObject="FleetBoard" Value="{StaticResource SelectedBoardColor}" />
             <ChangePropertyAction PropertyName="ItemsBackground" TargetObject="ShotsBoard" Value="{DynamicResource AccentColor}" />
           </DataTriggerBehavior>
         </Interaction.Behaviors>
