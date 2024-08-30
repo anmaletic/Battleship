@@ -27,7 +27,7 @@ public class GameHub : Hub
         if (user != null)
         {
             Users.Remove(user);
-            Console.WriteLine($"User {user.UserId} disconnected");
+            Console.WriteLine($"<> User {user.ConnectionId} - {user.UserId} disconnected");
         }
         await base.OnDisconnectedAsync(exception);
         
@@ -78,6 +78,8 @@ public class GameHub : Hub
             {
                 await Clients.Client(target.ConnectionId).SendAsync("ReceiveChallenge", source);
             }
+            
+            Console.WriteLine($"<> {source!.UserId} challenged {target!.UserId}");
         }
         catch (Exception e)
         {
@@ -95,6 +97,8 @@ public class GameHub : Hub
             {
                 await Clients.Client(target.ConnectionId).SendAsync("ReceiveChallengeResponse", source, response);
             }
+            
+            Console.WriteLine($"<> {source!.UserId} responded to {target!.UserId} challenge: {response}");
         }
         catch (Exception e)
         {
@@ -112,6 +116,8 @@ public class GameHub : Hub
             {
                 await Clients.Client(target.ConnectionId).SendAsync("ReceivePlayerData", source, data);
             }
+            
+            Console.WriteLine($"<> {source!.UserId} sent player data to {target!.UserId}");
         }
         catch (Exception e)
         {
@@ -130,7 +136,7 @@ public class GameHub : Hub
                 await Clients.Client(target.ConnectionId).SendAsync("ReceiveAttack", source, targetCell);
             }
             
-            Console.WriteLine($"{source!.UserId} attacked {targetCell.X}, {targetCell.Y}");
+            Console.WriteLine($"{source!.UserId} attacked {target!.UserId} {targetCell.X}, {targetCell.Y}");
         }
         catch (Exception e)
         {
@@ -146,6 +152,8 @@ public class GameHub : Hub
         {
             await Clients.Client(target.ConnectionId).SendAsync("ReceiveAttackResult", source, result);
         }
+        
+        Console.WriteLine($"{target!.UserId} attacked {source!.UserId} result: {result}");
     }
     
     public async Task GameOver(string targetId, string result)
@@ -158,6 +166,8 @@ public class GameHub : Hub
             {
                 await Clients.Client(target.ConnectionId).SendAsync("ReceiveGameOver", source, result);
             }
+            
+            Console.WriteLine($"<> {source!.UserId} game over with {target!.UserId} result: {result}");
         }
         catch (Exception e)
         {
