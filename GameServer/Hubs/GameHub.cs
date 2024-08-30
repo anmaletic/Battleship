@@ -166,7 +166,7 @@ public class GameHub : Hub
                 await Clients.Client(target.ConnectionId).SendAsync("ReceiveGameOver", source, result);
             }
             
-            Console.WriteLine($"<> {source!.UserId} game over with {target!.UserId} result: {result}");
+            Console.WriteLine($"<> Game over! {target!.UserId} won against {source!.UserId}");
         }
         catch (Exception e)
         {
