@@ -4,6 +4,7 @@
         <TargetFramework>net8.0-browser</TargetFramework>
         <RootNamespace>Vsite.Oom.Battleship.GUI.Browser</RootNamespace>
         <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+        <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
     </PropertyGroup>
 
 
